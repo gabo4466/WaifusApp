@@ -52,24 +52,38 @@ fun AddBlade(navController: NavController) {
 
             val user = auth.currentUser?.email
 
+            val userData = hashMapOf(
+                "email" to user
+            )
+
             Button(onClick = {
                 isLoading = true
                 if (user != null) {
+
                     db.collection(usersCollectionName)
                         .document(user)
-                        .collection(bladesCollectionName)
-                        .document(name.toString().lowercase())
-                        .set(data, SetOptions.merge())
+                        .set(userData, SetOptions.merge())
                         .addOnSuccessListener {
-                            responseMessage = successMessage
+                            db.collection(usersCollectionName)
+                                .document(user)
+                                .collection(bladesCollectionName)
+                                .document(name.toString().lowercase())
+                                .set(data, SetOptions.merge())
+                                .addOnSuccessListener {
+                                    responseMessage = successMessage
+                                }
+                                .addOnFailureListener {
+                                    responseMessage = errorMessage
+                                }
+                                .addOnCompleteListener {
+                                    isLoading = false
+                                    isResponse = true
+                                }
                         }
                         .addOnFailureListener {
                             responseMessage = errorMessage
                         }
-                        .addOnCompleteListener {
-                            isLoading = false
-                            isResponse = true
-                        }
+
                 }
             }) {
                 Text(text = stringResource(id = R.string.add_blade_submit))

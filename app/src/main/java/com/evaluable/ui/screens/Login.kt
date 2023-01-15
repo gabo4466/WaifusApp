@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun Login(navController: NavController) {
+    navController.enableOnBackPressed(false)
     val activity = LocalContext.current as MainActivity
     val viewModel: LoginViewModel by activity.viewModels()
     val loggedUser by viewModel.loggedUser().observeAsState(null)

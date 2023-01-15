@@ -14,6 +14,7 @@ fun AppNavigation() {
         composable(AppScreens.MainMenu.route) { MainMenu(navigationController) }
         composable(AppScreens.AddBlade.route) { AddBlade(navigationController) }
         composable(AppScreens.Login.route) { Login(navigationController) }
+        composable(AppScreens.ListUsers.route) { ListUsers(navigationController) }
 //        composable(AppScreens.ModificarCliente.ruta) {ModificarCliente(navigationController) }
 //        composable(AppScreens.BorrarCliente.ruta) { BorrarCliente(navigationController) }
 //        composable(AppScreens.ConsultarCliente.ruta) {ConsultarCliente(navigationController) }
