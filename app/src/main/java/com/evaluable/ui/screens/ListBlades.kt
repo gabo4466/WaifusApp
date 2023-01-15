@@ -1,8 +1,11 @@
 package com.evaluable.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.ui.graphics.Color
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,6 +20,8 @@ import androidx.navigation.NavController
 import com.evaluable.R
 import com.evaluable.model.Blade
 import com.evaluable.ui.TopBar
+import com.evaluable.ui.theme.Gray200
+import com.evaluable.ui.theme.Gray500
 import com.google.firebase.firestore.FirebaseFirestore
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -81,9 +86,14 @@ fun ListBlades(navController: NavController, email: String?) {
                     .fillMaxWidth()
                     .padding(bottom = 30.dp),
             ) {
-                for (blade in blades) {
-                    Log.d("BLADE", blade.name)
-                    BladeItem(blade = blade)
+                blades.forEachIndexed { index, blade ->
+                    var colorCell: Color
+                    if (index % 2 == 0) {
+                        colorCell = Gray200
+                    }else {
+                        colorCell = Gray500
+                    }
+                    BladeItem(blade = blade, color = colorCell)
                 }
 
             }
@@ -93,6 +103,23 @@ fun ListBlades(navController: NavController, email: String?) {
 }
 
 @Composable
-fun BladeItem(blade: Blade) {
-    Text(text = blade.name)
+fun BladeItem(blade: Blade, color: Color) {
+    Spacer(modifier = Modifier.size(15.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = color, shape = RoundedCornerShape(5.dp))
+            .padding(5.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            Text(text = blade.name, color = Color.Black)
+            blade.element?.let { Text(text = it, color = Color.Black) }
+        }
+        blade.description?.let {
+            Row() {
+                Text(text = blade.description!!, color = Color.Black)
+            }
+        }
+
+    }
 }
