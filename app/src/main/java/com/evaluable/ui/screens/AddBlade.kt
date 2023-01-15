@@ -52,8 +52,6 @@ fun AddBlade(navController: NavController) {
         val successMessage = stringResource(id = R.string.add_blade_success_res)
         val errorMessage = stringResource(id = R.string.add_blade_error_res)
         val focusManager = LocalFocusManager.current
-        val items =
-            listOf("Luz", "Oscuridad", "Fuego", "Agua", "Electricidad", "Tierra", "Viento", "Hielo")
 
 
         Column(

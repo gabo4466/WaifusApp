@@ -2,10 +2,11 @@ package com.evaluable.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.ui.graphics.Color
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,9 +32,11 @@ fun ListBlades(navController: NavController, email: String?) {
     var user by rememberSaveable { mutableStateOf("") }
     val bladesCollectionName = stringResource(id = R.string.collection_blades)
     val usersCollectionName = stringResource(id = R.string.collection_users)
-    var blades = rememberSaveable { mutableListOf<Blade>() }
+    val blades = rememberSaveable { mutableListOf<Blade>() }
     val error = stringResource(id = R.string.error_generic)
     var message by rememberSaveable { mutableStateOf("") }
+    var messageDelete by rememberSaveable { mutableStateOf("") }
+    var isResponse by rememberSaveable { mutableStateOf(false) }
     var isLoading by rememberSaveable { mutableStateOf(true) }
 
     val db = FirebaseFirestore.getInstance()
@@ -46,7 +49,7 @@ fun ListBlades(navController: NavController, email: String?) {
             .addOnSuccessListener {
                 blades.clear()
                 for (blade in it) {
-                    val auxBlade = Blade(blade.get("name") as String, blade.get("description") as String?, blade.get("element") as String?)
+                    val auxBlade = Blade(blade.id, blade.get("name") as String, blade.get("description") as String?, blade.get("element") as String?)
                     blades.add(auxBlade)
                 }
             }
@@ -62,6 +65,13 @@ fun ListBlades(navController: NavController, email: String?) {
         user = it
     }
 
+    if (isResponse){
+        PopUpConfirmation(text = messageDelete) {
+            isResponse = false
+            messageDelete = ""
+        }
+    }
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -71,8 +81,9 @@ fun ListBlades(navController: NavController, email: String?) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(text = message, color = MaterialTheme.colors.primary)
             if (isLoading) {
@@ -93,7 +104,26 @@ fun ListBlades(navController: NavController, email: String?) {
                     }else {
                         colorCell = Gray500
                     }
-                    BladeItem(blade = blade, color = colorCell)
+                    BladeItem(blade = blade, color = colorCell) {
+                        isLoading = true
+                        if (email != null) {
+                            db.collection(usersCollectionName)
+                                .document(email)
+                                .collection(bladesCollectionName)
+                                .document(blade.id)
+                                .delete()
+                                .addOnSuccessListener {
+                                    messageDelete = "Se ha eliminado con exito"
+                                }
+                                .addOnFailureListener {
+                                    messageDelete = error
+                                }
+                                .addOnCompleteListener {
+                                    isLoading = false
+                                    isResponse = true
+                                }
+                        }
+                    }
                 }
 
             }
@@ -103,7 +133,7 @@ fun ListBlades(navController: NavController, email: String?) {
 }
 
 @Composable
-fun BladeItem(blade: Blade, color: Color) {
+fun BladeItem(blade: Blade, color: Color, deleteButtonAction: () -> Unit) {
     Spacer(modifier = Modifier.size(15.dp))
     Column(
         modifier = Modifier
@@ -120,6 +150,30 @@ fun BladeItem(blade: Blade, color: Color) {
                 Text(text = blade.description!!, color = Color.Black)
             }
         }
+        Button(onClick = deleteButtonAction, modifier = Modifier.width(100.dp)) {
+            Text(text = "Borrar")
+        }
 
     }
+}
+
+
+@Composable
+fun PopUpConfirmation(text:String, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        text= {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onSurface
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "Continuar")
+            }
+        },
+        backgroundColor = MaterialTheme.colors.surface
+    )
 }
