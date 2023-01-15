@@ -1,20 +1,20 @@
 package com.evaluable.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.BorderStroke
+import android.graphics.Color
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.evaluable.R
@@ -22,6 +22,10 @@ import com.evaluable.ui.TopBar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.toSize
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -86,34 +90,55 @@ fun AddBlade(navController: NavController) {
                 "Viento",
                 "Hielo"
             )
-            var selectedIndex by remember { mutableStateOf(0) }
-            Button(onClick = { expanded = true }, modifier = Modifier.fillMaxWidth() ,colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)) {
-                Text(text = "Cambiar elemento", textAlign = TextAlign.Justify)
-            }
-            Text(text = items[selectedIndex])
-            DropdownMenu(
-                expanded = expanded, onDismissRequest = { expanded = false },
+
+
+            var element by rememberSaveable { mutableStateOf("") }
+
+            var textFieldSizeDropDownMenu by remember { mutableStateOf(Size.Zero)}
+
+            val icon = if (expanded)
+                Icons.Filled.KeyboardArrowUp
+            else
+                Icons.Filled.KeyboardArrowDown
+
+
+            OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        MaterialTheme.colors.primary
-                    )
+                    .onGloballyPositioned { coordinates ->
+                        textFieldSizeDropDownMenu = coordinates.size.toSize()
+                    },
+                colors = TextFieldDefaults.textFieldColors(disabledLabelColor = MaterialTheme.colors.secondary, disabledIndicatorColor = MaterialTheme.colors.secondary),
+                value = element,
+                onValueChange = {  },
+                readOnly = true,
+                label = {Text("Elemento", Modifier.clickable { expanded = !expanded })},
+                trailingIcon = {
+                    Icon(icon,"contentDescription",
+                        Modifier.clickable { expanded = !expanded })
+                }
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(with(LocalDensity.current){textFieldSizeDropDownMenu.width.toDp()})
             ) {
-                items.forEachIndexed { index, s ->
+                items.forEach { label ->
                     DropdownMenuItem(onClick = {
-                        selectedIndex = index
+                        element = label
                         expanded = false
                     }) {
-                        Text(text = s)
+                        Text(text = label)
                     }
                 }
             }
             Spacer(modifier = Modifier.size(20.dp))
 
             val data = hashMapOf(
-                "name" to name.toString(),
-                "description" to description.toString(),
-                "element" to items[selectedIndex].toString()
+                "name" to name.toString().trim(),
+                "description" to description.toString().trim(),
+                "element" to element.toString()
             )
 
             val user = auth.currentUser?.email
@@ -133,7 +158,7 @@ fun AddBlade(navController: NavController) {
                             db.collection(usersCollectionName)
                                 .document(user)
                                 .collection(bladesCollectionName)
-                                .document(name.toString().lowercase())
+                                .document(name.toString().trim().lowercase())
                                 .set(data, SetOptions.merge())
                                 .addOnSuccessListener {
                                     responseMessage = successMessage
@@ -160,6 +185,7 @@ fun AddBlade(navController: NavController) {
                     isResponse = false
                     name = ""
                     description = ""
+                    element = ""
                     focusManager.clearFocus()
                 }
             }
