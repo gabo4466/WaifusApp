@@ -1,5 +1,6 @@
 package com.evaluable.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,17 +12,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.evaluable.MainActivity
 import com.evaluable.R
 import com.evaluable.ui.TopBar
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainMenu(navController: NavController) {
+
+    val auth = FirebaseAuth.getInstance()
+    val activity = LocalContext.current as MainActivity
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopBar(navController = navController, backbutton = false, pageName = stringResource(
@@ -43,6 +55,18 @@ fun MainMenu(navController: NavController) {
                 Spacer(modifier = Modifier.size(20.dp))
                 Button(onClick = { navController.navigate("add_blade") }, modifier = Modifier.width(250.dp)) {
                     Text(text = stringResource(id = R.string.main_menu_opt2))
+                }
+                Spacer(modifier = Modifier.size(20.dp))
+                Button(onClick = {
+                    val gso: GoogleSignInOptions =
+                        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken(activity.getString(R.string.default_web_client_id))
+                            .requestEmail()
+                            .build()
+                    val client = GoogleSignIn.getClient(activity, gso)
+                    Auth.GoogleSignInApi.signOut(client.asGoogleApiClient())
+                    navController.navigate("login_screen") }, modifier = Modifier.width(250.dp)) {
+                    Text(text = stringResource(id = R.string.logout))
                 }
             }
         }

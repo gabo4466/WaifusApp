@@ -1,5 +1,6 @@
 package com.evaluable.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -13,6 +14,7 @@ import com.evaluable.R
 import com.evaluable.ui.TopBar
 import com.google.firebase.firestore.FirebaseFirestore
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AddBlade(navController: NavController) {
     Scaffold(topBar = { TopBar(navController = navController, pageName = stringResource(id = R.string.main_menu_opt1)) }) {

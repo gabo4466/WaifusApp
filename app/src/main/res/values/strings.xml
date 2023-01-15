@@ -9,4 +9,6 @@
     <string name="add_blade_error_res">Ha ocurrido un error</string>
     <string name="confirmation_button">Ok</string>
     <string name="main_menu_home">Inicio</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="logout">Cerrar sesión</string>
 </resources>

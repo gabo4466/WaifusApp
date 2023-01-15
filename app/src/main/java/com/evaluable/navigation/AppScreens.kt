@@ -1,6 +1,7 @@
 package com.evaluable.navigation
 
 sealed class AppScreens(val route: String) {
+    object Login: AppScreens("login_screen")
     object MainMenu: AppScreens("main_menu")
     object AddBlade: AppScreens("add_blade")
     object DeleteBlade: AppScreens("delete_blade")
