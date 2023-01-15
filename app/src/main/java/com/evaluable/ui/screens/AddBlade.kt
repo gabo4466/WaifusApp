@@ -8,19 +8,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.evaluable.R
 import com.evaluable.ui.TopBar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AddBlade(navController: NavController) {
     Scaffold(topBar = { TopBar(navController = navController, pageName = stringResource(id = R.string.main_menu_opt1)) }) {
 
+        val auth = FirebaseAuth.getInstance()
         val db =  FirebaseFirestore.getInstance()
-        val collectionName = stringResource(id = R.string.collection_blades)
+        val usersCollectionName = stringResource(id = R.string.collection_users)
+        val bladesCollectionName = stringResource(id = R.string.collection_blades)
 
         // STATES
         var name by rememberSaveable { mutableStateOf("") }
@@ -45,21 +50,27 @@ fun AddBlade(navController: NavController) {
                 "name" to name.toString()
             )
 
+            val user = auth.currentUser?.email
+
             Button(onClick = {
                 isLoading = true
-                db.collection(collectionName)
-                    .document()
-                    .set(data)
-                    .addOnSuccessListener {
-                        responseMessage = successMessage
-                    }
-                    .addOnFailureListener {
-                        responseMessage = errorMessage
-                    }
-                    .addOnCompleteListener {
-                        isLoading = false
-                        isResponse = true
-                    }
+                if (user != null) {
+                    db.collection(usersCollectionName)
+                        .document(user)
+                        .collection(bladesCollectionName)
+                        .document(name.toString().lowercase())
+                        .set(data, SetOptions.merge())
+                        .addOnSuccessListener {
+                            responseMessage = successMessage
+                        }
+                        .addOnFailureListener {
+                            responseMessage = errorMessage
+                        }
+                        .addOnCompleteListener {
+                            isLoading = false
+                            isResponse = true
+                        }
+                }
             }) {
                 Text(text = stringResource(id = R.string.add_blade_submit))
             }
