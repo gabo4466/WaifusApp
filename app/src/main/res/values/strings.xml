@@ -16,4 +16,5 @@
     <string name="list_users_action">Ver Blades</string>
     <string name="blade_list">"Colección"</string>
     <string name="list_blades_own">Ver mis Blades</string>
+    <string name="add_blade_description">Descripción</string>
 </resources>
