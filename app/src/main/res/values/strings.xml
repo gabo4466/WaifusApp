@@ -14,4 +14,6 @@
     <string name="collection_users">users</string>
     <string name="error_generic">Algo ha ocurrido mal</string>
     <string name="list_users_action">Ver Blades</string>
+    <string name="blade_list">"Colección"</string>
+    <string name="list_blades_own">Ver mis Blades</string>
 </resources>

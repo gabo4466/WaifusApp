@@ -2,9 +2,12 @@ package com.evaluable.navigation
 
 import android.window.SplashScreen
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavArgument
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.evaluable.ui.screens.*
 
 @Composable
@@ -15,6 +18,8 @@ fun AppNavigation() {
         composable(AppScreens.AddBlade.route) { AddBlade(navigationController) }
         composable(AppScreens.Login.route) { Login(navigationController) }
         composable(AppScreens.ListUsers.route) { ListUsers(navigationController) }
+        composable(AppScreens.ListBlades.route + "/{email}", arguments = listOf(navArgument(name = "email"){type=
+            NavType.StringType})) { ListBlades(navigationController, it.arguments?.getString("email")) }
 //        composable(AppScreens.ModificarCliente.ruta) {ModificarCliente(navigationController) }
 //        composable(AppScreens.BorrarCliente.ruta) { BorrarCliente(navigationController) }
 //        composable(AppScreens.ConsultarCliente.ruta) {ConsultarCliente(navigationController) }

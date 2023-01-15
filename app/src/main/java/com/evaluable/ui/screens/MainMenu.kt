@@ -54,7 +54,7 @@ fun MainMenu(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.size(20.dp))
                 Button(onClick = { navController.navigate("list_users") }, modifier = Modifier.width(250.dp)) {
-                    Text(text = stringResource(id = R.string.main_menu_opt2))
+                    Text(text = stringResource(id = R.string.list_users_action))
                 }
                 Spacer(modifier = Modifier.size(20.dp))
                 Button(

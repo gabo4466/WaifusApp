@@ -20,12 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.evaluable.R
 import com.evaluable.ui.TopBar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ListUsers(navController: NavController) {
 
+    val auth = FirebaseAuth.getInstance()
+    val userLogged = auth.currentUser?.email
     val db = FirebaseFirestore.getInstance()
     val usersCollectionName = stringResource(id = R.string.collection_users)
     val error = stringResource(id = R.string.error_generic)
@@ -76,8 +79,17 @@ fun ListUsers(navController: NavController) {
                     .fillMaxWidth()
                     .padding(bottom = 30.dp),
             ) {
+                Spacer(modifier = Modifier.size(30.dp))
+                Button(onClick = { 
+                    navController.navigate("list_blades/$userLogged")
+                },
+                modifier = Modifier.fillMaxWidth()) {
+                    Text(text = stringResource(id = R.string.list_blades_own))
+                }
                 for (email in users) {
-                    UserItem(email = email)
+                    if (email != userLogged){
+                        UserItem(email = email, navController)
+                    }
                 }
 
             }
@@ -88,7 +100,7 @@ fun ListUsers(navController: NavController) {
 }
 
 @Composable
-fun UserItem(email: String) {
+fun UserItem(email: String, navController: NavController) {
 
     Spacer(modifier = Modifier.size(30.dp))
 
@@ -98,7 +110,7 @@ fun UserItem(email: String) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = email, textAlign = TextAlign.Left)
-        Button(onClick = { /*TODO*/ }, modifier = Modifier.width(130.dp)) {
+        Button(onClick = { navController.navigate("list_blades/$email") }, modifier = Modifier.width(130.dp)) {
             Text(text = stringResource(id = R.string.list_users_action))
         }
     }
