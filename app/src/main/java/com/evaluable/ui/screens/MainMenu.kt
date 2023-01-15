@@ -24,22 +24,24 @@ import com.evaluable.ui.TopBar
 fun MainMenu(navController: NavController) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { TopBar(navController = navController, backbutton = false) }
+        topBar = { TopBar(navController = navController, backbutton = false, pageName = stringResource(
+            id = R.string.main_menu_home
+        )) }
     ) {
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Image(modifier = Modifier.fillMaxWidth(), contentScale = ContentScale.FillWidth,painter = painterResource(id = R.drawable.waifus_banner), contentDescription = "Banner")
+            Image(modifier = Modifier.fillMaxWidth(), contentScale = ContentScale.FillWidth,painter = painterResource(id = R.drawable.xenoblade_banner_large), contentDescription = "Banner")
             Column (
                 modifier = Modifier.padding(20.dp)
                     ) {
-                Button(onClick = { navController.navigate("add_waifu") }, modifier = Modifier.width(250.dp)) {
+                Button(onClick = { navController.navigate("add_blade") }, modifier = Modifier.width(250.dp)) {
                     Text(text = stringResource(id = R.string.main_menu_opt1))
                 }
                 Spacer(modifier = Modifier.size(20.dp))
-                Button(onClick = { navController.navigate("add_waifu") }, modifier = Modifier.width(250.dp)) {
+                Button(onClick = { navController.navigate("add_blade") }, modifier = Modifier.width(250.dp)) {
                     Text(text = stringResource(id = R.string.main_menu_opt2))
                 }
             }

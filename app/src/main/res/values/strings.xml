@@ -1,11 +1,12 @@
 <resources>
-    <string name="app_name">Waifus</string>
-    <string name="main_menu_opt1">Añadir Waifu</string>
-    <string name="main_menu_opt2">Listar Waifus</string>
-    <string name="add_waifu_name">Nombre</string>
-    <string name="add_waifus_submit">Guardar</string>
-    <string name="collection_waifus">waifus</string>
-    <string name="add_waifu_success_res">Se ha guardado con éxito</string>
-    <string name="add_waifu_error_res">Ha ocurrido un error</string>
+    <string name="app_name">Blades</string>
+    <string name="main_menu_opt1">Añadir Blade</string>
+    <string name="main_menu_opt2">Listar Blade</string>
+    <string name="add_blade_name">Nombre</string>
+    <string name="add_blade_submit">Guardar</string>
+    <string name="collection_blades">blades</string>
+    <string name="add_blade_success_res">Se ha guardado con éxito</string>
+    <string name="add_blade_error_res">Ha ocurrido un error</string>
     <string name="confirmation_button">Ok</string>
+    <string name="main_menu_home">Inicio</string>
 </resources>

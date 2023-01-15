@@ -12,7 +12,7 @@ fun AppNavigation() {
     val navigationController = rememberNavController()
     NavHost(navController = navigationController, startDestination = AppScreens.MainMenu.route) {
         composable(AppScreens.MainMenu.route) { MainMenu(navigationController) }
-        composable(AppScreens.AddWaifu.route) { AddWaifu(navigationController) }
+        composable(AppScreens.AddBlade.route) { AddBlade(navigationController) }
 //        composable(AppScreens.ModificarCliente.ruta) {ModificarCliente(navigationController) }
 //        composable(AppScreens.BorrarCliente.ruta) { BorrarCliente(navigationController) }
 //        composable(AppScreens.ConsultarCliente.ruta) {ConsultarCliente(navigationController) }

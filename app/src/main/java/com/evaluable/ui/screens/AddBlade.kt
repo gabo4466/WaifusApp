@@ -14,11 +14,11 @@ import com.evaluable.ui.TopBar
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-fun AddWaifu(navController: NavController) {
+fun AddBlade(navController: NavController) {
     Scaffold(topBar = { TopBar(navController = navController, pageName = stringResource(id = R.string.main_menu_opt1)) }) {
 
         val db =  FirebaseFirestore.getInstance()
-        val collectionName = stringResource(id = R.string.collection_waifus)
+        val collectionName = stringResource(id = R.string.collection_blades)
 
         // STATES
         var name by rememberSaveable { mutableStateOf("") }
@@ -26,8 +26,8 @@ fun AddWaifu(navController: NavController) {
         var responseMessage by rememberSaveable { mutableStateOf("") }
         var isLoading by rememberSaveable { mutableStateOf(false) }
 
-        val successMessage = stringResource(id = R.string.add_waifu_success_res)
-        val errorMessage = stringResource(id = R.string.add_waifu_error_res)
+        val successMessage = stringResource(id = R.string.add_blade_success_res)
+        val errorMessage = stringResource(id = R.string.add_blade_error_res)
 
 
         Column (
@@ -36,7 +36,7 @@ fun AddWaifu(navController: NavController) {
                 .padding(25.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(value = name, onValueChange = {name = it}, label = { Text(text = stringResource(id = R.string.add_waifu_name)) }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = name, onValueChange = {name = it}, label = { Text(text = stringResource(id = R.string.add_blade_name)) }, modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.size(20.dp))
 
             val data = hashMapOf(
@@ -55,11 +55,11 @@ fun AddWaifu(navController: NavController) {
                         responseMessage = errorMessage
                     }
                     .addOnCompleteListener {
-                        isResponse = true
                         isLoading = false
+                        isResponse = true
                     }
             }) {
-                Text(text = stringResource(id = R.string.add_waifus_submit))
+                Text(text = stringResource(id = R.string.add_blade_submit))
             }
 
             if (isResponse) {
