@@ -23,12 +23,15 @@ import com.evaluable.model.Blade
 import com.evaluable.ui.TopBar
 import com.evaluable.ui.theme.Gray200
 import com.evaluable.ui.theme.Gray500
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ListBlades(navController: NavController, email: String?) {
 
+    val auth = FirebaseAuth.getInstance()
+    val userLogged = auth.currentUser?.email
     var user by rememberSaveable { mutableStateOf("") }
     val bladesCollectionName = stringResource(id = R.string.collection_blades)
     val usersCollectionName = stringResource(id = R.string.collection_users)
@@ -104,7 +107,11 @@ fun ListBlades(navController: NavController, email: String?) {
                     }else {
                         colorCell = Gray500
                     }
-                    BladeItem(blade = blade, color = colorCell) {
+                    var delete = false
+                    if (userLogged == user){
+                        delete = true
+                    }
+                    BladeItem(blade = blade, color = colorCell, delete = delete) {
                         isLoading = true
                         if (email != null) {
                             db.collection(usersCollectionName)
@@ -133,25 +140,32 @@ fun ListBlades(navController: NavController, email: String?) {
 }
 
 @Composable
-fun BladeItem(blade: Blade, color: Color, deleteButtonAction: () -> Unit) {
+fun BladeItem(blade: Blade, color: Color, delete: Boolean, deleteButtonAction: () -> Unit) {
     Spacer(modifier = Modifier.size(15.dp))
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = color, shape = RoundedCornerShape(5.dp))
-            .padding(5.dp)
+            .padding(10.dp)
     ) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Text(text = blade.name, color = Color.Black)
-            blade.element?.let { Text(text = it, color = Color.Black) }
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(text = blade.name, color = Color.Black, style = MaterialTheme.typography.h5)
+            blade.getColorElement()?.let {
+                blade.element?.let { Text(text = it, color = Color.Black, modifier = Modifier.background(color = blade.getColorElement()!!, shape = RoundedCornerShape(5.dp)).padding(10.dp)) }
+            }
         }
         blade.description?.let {
             Row() {
                 Text(text = blade.description!!, color = Color.Black)
             }
         }
-        Button(onClick = deleteButtonAction, modifier = Modifier.width(100.dp)) {
-            Text(text = "Borrar")
+        if (delete){
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Button(onClick = deleteButtonAction, modifier = Modifier.width(100.dp)) {
+                    Text(text = "Borrar")
+                }
+
+            }
         }
 
     }
